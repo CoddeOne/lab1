@@ -1,0 +1,46 @@
+version: "3.9"
+services:
+  postgresdb:
+    image: postgres:16-alpine
+    container_name: postgresdb
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-d", "pgtest", "-U", "admin"]
+      interval: 2s
+      timeout: 5s
+      retries: 5
+    restart: always
+  flyway:
+    image: flyway/flyway
+    container_name: flyway
+    environment:
+      - FLYWAY_USER=${POSTGRES_USER}
+      - FLYWAY_PASSWORD=${POSTGRES_PASSWORD}
+      - FLYWAY_URL=jdbc:postgresql://postgresdb:5432/${POSTGRES_DB}
+    command: -locations=filesystem:/flyway/sql -baselineOnMigrate=true  migrate
+    volumes:
+      - ./migrations:/flyway/sql
+    depends_on:
+      postgresdb:
+        condition: service_healthy
+#  spring-rest:
+#    image: tomcat:8.5.82-jre8-openjdk
+#    container_name: spring-rest
+#    ports:
+#      - 8080:8080
+#    volumes:
+#      - ./webapps:/usr/local/tomcat/webapps
+#    depends_on:
+#      flyway:
+#        condition: service_completed_successfully
+#      postgresdb:
+#        condition: service_healthy
+#    restart: always

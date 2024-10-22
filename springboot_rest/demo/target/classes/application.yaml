@@ -1,0 +1,28 @@
+server:
+  port: 8081
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/pgtest
+    username: postgres
+    password: "1111"
+    driverClassName: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+#datasource:
+#  driverClassName: org.postgresql.Driver
+##  jdbcUrl: jdbc:postgresql://localhost:7000/pgtest
+#  jdbcUrl: jdbc:postgresql://postgresdb:5433/pgtest
+#  username: admin
+#  password: admin
+#  maximumPoolSize: 1
+#hibernate:
+#  hbm2ddl:
+#    auto: validate
+#  dialect: org.hibernate.dialect.PostgreSQLDialect
+#  connection:
+#    driver_class: org.postgresql.Driver
+#  show_sql: true
